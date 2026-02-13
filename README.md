@@ -28,6 +28,6 @@ Le projet permet l’envoi et la réception instantanée de messages grâce à W
 
 ## Cloner le projet
 
-git clone https://github.com/kelt-ac/live-chat.git
+git clone https://github.com/kelt-ac/Live-Chat.git
 
 
