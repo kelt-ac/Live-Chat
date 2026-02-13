@@ -18,11 +18,11 @@ Le projet permet l’envoi et la réception instantanée de messages grâce à W
 
 #Fonctionnalités
 
-- 🔐 Connexion des utilisateurs
-- 💬 Envoi et réception de messages en temps réel
-- 👥 Messagerie interne
-- 🟢 Mise à jour instantanée sans rechargement de page
-- 🗄️ Sauvegarde des messages dans MySQL
+- Connexion des utilisateurs
+- Envoi et réception de messages en temps réel
+- Messagerie interne
+- Mise à jour instantanée sans rechargement de page
+- Sauvegarde des messages dans MySQL
 
 ---
 
