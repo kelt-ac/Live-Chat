@@ -1,11 +1,11 @@
-# Live-Chat
+## Live-Chat
 
 Application web de messagerie interne en temps réel destinée à une entreprise ou une université.  
 Le projet permet l’envoi et la réception instantanée de messages grâce à WebSocket.
 
 ---
 
-#Technologies utilisées
+## Technologies utilisées
 
 - Java Servlet
 - JSP (Java Server Pages)
@@ -16,7 +16,7 @@ Le projet permet l’envoi et la réception instantanée de messages grâce à W
 
 ---
 
-#Fonctionnalités
+## Fonctionnalités
 
 - Connexion des utilisateurs
 - Envoi et réception de messages en temps réel
@@ -26,7 +26,7 @@ Le projet permet l’envoi et la réception instantanée de messages grâce à W
 
 ---
 
-#Cloner le projet
+## Cloner le projet
 
 git clone https://github.com/kelt-ac/live-chat.git
 
