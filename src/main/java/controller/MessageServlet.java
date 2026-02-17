@@ -69,7 +69,7 @@ public class MessageServlet extends HttpServlet {
         request.setAttribute("unreadCount", unreadCount);
         request.setAttribute("currentUser", currentUser);
 
-        request.getRequestDispatcher("/WEB-INF/views/messages.jsp").forward(request, response);
+        request.getRequestDispatcher("/messages.jsp").forward(request, response);
     }
 
     @Override
