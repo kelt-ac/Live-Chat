@@ -30,6 +30,13 @@
     <h3 class="text-center titre-logo mb-3">Messagerie Interne</h3>
     <h5 class="text-center mb-4">Connexion</h5>
 
+    <% if (request.getAttribute("error") != null) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= request.getAttribute("error") %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <% } %>
+
     <form action="login" method="post">
         <div class="mb-3">
             <label class="form-label">Email</label>
@@ -44,10 +51,10 @@
         <button type="submit" class="btn btn-primary w-100">Se connecter</button>
 
         <p class="text-center mt-3">
-            Vous n'avez pas de compte ? <a href="signup.jsp">Créer un compte</a>
+            Vous n'avez pas de compte ? <a href="register">Créer un compte</a>
         </p>
     </form>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
