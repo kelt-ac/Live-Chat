@@ -4,67 +4,66 @@ import dao.MessageDAO;
 import dao.UserDAO;
 import model.Message;
 import model.User;
-import websocket.ChatEndpoint;
-
-import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 public class MessageService {
+    private final MessageDAO messageDAO = new MessageDAO();
+    private final UserDAO userDAO = new UserDAO();
 
-    private final MessageDAO messageDAO;
-    private final UserDAO userDAO;
-
-    public MessageService(){
-        this.messageDAO = new MessageDAO();
-        this.userDAO = new UserDAO();
-    }
-
-    public MessageService(MessageDAO messageDAO, UserDAO userDAO) {
-        this.messageDAO = messageDAO;
-        this.userDAO = userDAO;
-    }
-
-    public Message sendMessage(Long senderId, Long receiverId, String content) {
-        if (senderId == null || receiverId == null) {
-            throw new IllegalArgumentException("the sender and the receiver are required");
-        }
-
+    public boolean sendMessage(Long senderId, Long receiverId, String content) {
         if (content == null || content.trim().isEmpty()) {
-            throw new IllegalArgumentException("the message`s content can't be empty!");
+            return false;
         }
 
         User sender = userDAO.findById(senderId);
         User receiver = userDAO.findById(receiverId);
 
-        if (sender == null) {
-            throw new RuntimeException("sender doesn't exist");
-        }
-        if (receiver == null) {
-            throw new RuntimeException("reciever doesn't exist");
+        if (sender == null || receiver == null) {
+            return false;
         }
 
-        Message message = new Message();
-        message.setSender(sender);
-        message.setReceiver(receiver);
-        message.setContent(content.trim());
-        message.setDate_time(new Date());
-        message.setIsRead(false);
+        Message message = new Message(sender, receiver, content, new Date());
+        messageDAO.save(message);
+        return true;
+    }
 
-        Message savedMessage = messageDAO.save(message);
+    public List<Message> getConversation(Long userId1, Long userId2) {
+        User user1 = userDAO.findById(userId1);
+        User user2 = userDAO.findById(userId2);
 
-        //Notification
-        try {
-            String notification = String.format(
-                    "{\"type\":\"NEW_MESSAGE\",\"messageId\":%d,\"from\":\"%s %s\",\"content\":\"%s\"}",
-                    savedMessage.getId(),
-                    sender.getFirstName(),
-                    sender.getLastName(),
-                    content.replace("\"", "\\\"")
-            );
-            ChatEndpoint.sendToUser(receiverId.intValue(), notification);
-        } catch (Exception e) {
-            System.err.println("Erreur notification Web Socket: " + e.getMessage());
+        if (user1 == null || user2 == null) {
+            return List.of(); // Liste vide
         }
-        return savedMessage;
+
+        return messageDAO.findConversation(user1, user2);
+    }
+
+    public List<Message> getReceivedMessages(Long userId) {
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            return List.of();
+        }
+        return messageDAO.findReceivedMessages(user);
+    }
+
+    public List<Message> getSentMessages(Long userId) {
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            return List.of();
+        }
+        return messageDAO.findSentMessages(user);
+    }
+
+    public void markMessageAsRead(Long messageId) {
+        messageDAO.markAsRead(messageId);
+    }
+
+    public int getUnreadCount(Long userId) {
+        User user = userDAO.findById(userId);
+        if (user == null) {
+            return 0;
+        }
+        return messageDAO.countUnreadMessages(user);
     }
 }

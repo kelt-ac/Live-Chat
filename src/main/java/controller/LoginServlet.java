@@ -1,28 +1,43 @@
 package controller;
 
-import dao.UserDAO;
+import services.UserService;
+import model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    private final UserService userService = new UserService();
+
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Afficher la page de login
+        request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+    }
 
-        String userName = req.getParameter("userName");
-        String password = req.getParameter("password");
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-        /*if(UserDAO.login(userName, password)){
-            req.getSession().setAttribute("userName", userName);
-            //resp.sendRedirect("chat.jsp");
+        User user = userService.login(email, password);
+
+        if (user != null) {
+            // Login réussi
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            response.sendRedirect(request.getContextPath() + "/messages");
         } else {
-            //resp.sendRedirect("page d'erreur");
-        }*/
+            // Login échoué
+            request.setAttribute("error", "Email ou mot de passe incorrect");
+            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+        }
     }
 }
