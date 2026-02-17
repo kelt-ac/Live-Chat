@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="navbar.jsp" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -102,69 +103,51 @@
 
 <!-- Header conversation -->
 <div class="chat-header">
-    <a href="home.jsp" class="back-btn">
+    <a href="${pageContext.request.contextPath}/home" class="back-btn">
         <i class="bi bi-arrow-left"></i>
     </a>
-    <h6>Youssef Omar</h6>
+    <h6>
+        ${contact.firstName} ${contact.lastName}
+    </h6>
 </div>
 
 <!-- Messages -->
-<div class="chat-container">
+<div class="chat-container" id="chatBox">
 
-    <!-- Message reçu -->
-    <div class="message received">
-        Bonjour, comment ça va ?
-        <div class="message-time">10:15</div>
-    </div>
+    <c:forEach var="msg" items="${messages}">
 
-    <!-- Message envoyé -->
-    <div class="message sent">
-        Ça va très bien merci 😊
-        <div class="message-time">10:16</div>
-    </div>
+        <c:choose>
 
-    <!-- Message reçu -->
-    <div class="message received">
-        On travaille sur le projet ?On travaille sur le projet ?On travaille sur le projet ?On travaille sur le projet
-        ?On travaille sur le projet ?On travaille sur le projet ?On travaille sur le projet ?On travaille sur le projet
-        ?On travaille sur le projet ?On travaille sur le projet ?On travaille sur le projet ?On travaille sur le projet
-        ?On travaille sur le projet ?On travaille sur le projet ?On travaille sur le projet ?On travaille sur le projet
-        ?On travaille sur le projet ?On travaille sur le projet ?
-        <div class="message-time">10:17</div>
-    </div>
-    <!-- Message reçu -->
-    <div class="message received">
-        On travaille sur le projet ?
-        <div class="message-time">10:17</div>
-    </div>  <!-- Message reçu -->
-    <div class="message received">
-        On travaille sur le projet ?
-        <div class="message-time">10:17</div>
-    </div>  <!-- Message reçu -->
-    <div class="message received">
-        On travaille sur le projet ?
-        <div class="message-time">10:17</div>
-    </div>  <!-- Message reçu -->
-    <div class="message received">
-        On travaille sur le projet ?
-        <div class="message-time">10:17</div>
-    </div>
-    <div class="message sent">
-        Ça va très bien merci
-        <div class="message-time">10:16</div>
-    </div>
-    <div class="message sent">
-        Ça va très bien merci
-        <div class="message-time">10:16</div>
-    </div>
+            <c:when test="${msg.sender.id == sessionScope.user.id}">
+                <div class="message sent">
+                        ${msg.content}
+                    <div class="message-time">
+                        <fmt:formatDate value="${msg.date_time}" pattern="dd/MM/yyyy HH:mm" />
+                    </div>
+                </div>
+            </c:when>
+
+            <c:otherwise>
+                <div class="message received">
+                        ${msg.content}
+                    <div class="message-time">
+                        <fmt:formatDate value="${msg.date_time}" pattern="dd/MM/yyyy HH:mm" />
+                    </div>
+                </div>
+            </c:otherwise>
+
+        </c:choose>
+
+    </c:forEach>
+
 </div>
 
 <!-- Input -->
 <div class="chat-input">
-    <form class="d-flex">
-        <input type="text" class="form-control me-2" placeholder="Écrire un message..." required>
-        <button type="submit" class="send-btn">
-            <i class="bi bi-send-fill"></i>
+    <form class="d-flex" onsubmit="sendMessage(); return false;">
+        <input type="text" id="messageInput" class="form-control me-2" placeholder="Écrire un message..." required>
+        <button onclick="sendMessage()" class="btn btn-primary">
+            <i class="bi bi-send"></i>
         </button>
     </form>
 </div>
@@ -176,6 +159,55 @@
     }
 
     window.onload = scrollToBottom;
+</script>
+<script>
+    const userId = ${sessionScope.user.id};
+    const contactId = ${contact.id};
+
+    const socket = new WebSocket("ws://" + window.location.host + "${pageContext.request.contextPath}/ws/" + userId);
+
+    socket.onmessage = function (event) {
+
+        const parts = event.data.split("|");
+
+        const senderId = parts[0];
+        const content = parts[1];
+        const date = parts[2];
+
+        const chatBox = document.getElementById("chatBox");
+
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message");
+
+        if (senderId == userId) {
+            messageDiv.classList.add("sent");
+        } else {
+            messageDiv.classList.add("received");
+        }
+
+        messageDiv.innerHTML =
+            content +
+            "<div class='message-time'>" + date + "</div>";
+
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    function sendMessage() {
+
+        event.preventDefault(); // empêche refresh
+
+        const input = document.getElementById("messageInput");
+        const content = input.value;
+
+        if (content.trim() !== "") {
+
+            socket.send(contactId + ":" + content);
+
+            input.value = "";
+        }
+    }
+
 </script>
 </body>
 </html>

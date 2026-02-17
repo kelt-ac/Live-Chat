@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="navbar.jsp" %>
 
 <!DOCTYPE html>
@@ -17,7 +18,7 @@
 
         .settings-card {
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .section-title {
@@ -41,19 +42,23 @@
                 </h5>
 
                 <div class="mb-2">
-                    <strong>Prénom :</strong> ${sessionScope.prenom} Reda
+                    <strong>Prénom :</strong>
+                    ${sessionScope.user.firstName}
                 </div>
 
                 <div class="mb-2">
-                    <strong>Nom :</strong> ${sessionScope.nom} QALQOL
+                    <strong>Nom :</strong>
+                    ${sessionScope.user.lastName}
                 </div>
 
                 <div class="mb-2">
-                    <strong>Email :</strong> ${sessionScope.email} redaqal@gmail.com
+                    <strong>Email :</strong>
+                    ${sessionScope.user.email}
                 </div>
 
                 <div class="mb-2">
-                    <strong>Téléphone :</strong> ${sessionScope.phone} 0642123239
+                    <strong>Téléphone :</strong>
+                    ${sessionScope.user.phone}
                 </div>
             </div>
 
@@ -63,8 +68,18 @@
                     <i class="bi bi-lock me-2"></i>
                     Changer le mot de passe
                 </h5>
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger">
+                            ${error}
+                    </div>
+                </c:if>
 
-                <form action="ChangePasswordServlet" method="post" id="passwordForm">
+                <c:if test="${not empty success}">
+                    <div class="alert alert-success">
+                            ${success}
+                    </div>
+                </c:if>
+                <form action="${pageContext.request.contextPath}/settings" method="post">
 
                     <div class="mb-3">
                         <label class="form-label">Mot de passe actuel</label>

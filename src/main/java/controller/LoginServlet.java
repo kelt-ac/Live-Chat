@@ -33,7 +33,7 @@ public class LoginServlet extends HttpServlet {
             // Login réussi
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            response.sendRedirect(request.getContextPath() + "/messages");
+            response.sendRedirect(request.getContextPath() + "/home");
         } else {
             // Login échoué
             request.setAttribute("error", "Email ou mot de passe incorrect");

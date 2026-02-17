@@ -3,22 +3,27 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container-fluid">
 
-        <!-- Logo / Nom appli -->
-        <a class="navbar-brand fw-bold" href="home.jsp">Messagerie Interne</a>
+        <a class="navbar-brand fw-bold" href="${pageContext.request.contextPath}/home">
+            Messagerie Interne
+        </a>
 
         <div class="d-flex align-items-center ms-auto">
 
             <!-- Bouton profil -->
-            <a href="settings.jsp" class="btn btn-light me-2 d-flex align-items-center">
+            <a href="${pageContext.request.contextPath}/settings"
+               class="btn btn-light me-2 d-flex align-items-center">
                 <i class="bi bi-person-circle me-1"></i>
-<%--                ${sessionScope.prenom}--%>
-                Reda
+                ${sessionScope.user.firstName}
             </a>
 
-            <!-- Bouton déconnexion -->
-            <button class="btn btn-secondary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
-            </button>
+            <!-- Déconnexion -->
+            <a href="#"
+               class="btn btn-secondary d-flex align-items-center"
+               data-bs-toggle="modal"
+               data-bs-target="#logoutModal">
+                <i class="bi bi-box-arrow-right me-1"></i>
+                Déconnexion
+            </a>
         </div>
     </div>
 </nav>
@@ -36,7 +41,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <a href="LogoutServlet" class="btn btn-danger">Déconnexion</a>
+                <a href="${pageContext.request.contextPath}/logout" class="btn btn-danger">Déconnexion</a>
             </div>
         </div>
     </div>
