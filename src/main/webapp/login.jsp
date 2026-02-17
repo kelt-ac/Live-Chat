@@ -30,7 +30,7 @@
     <h3 class="text-center titre-logo mb-3">Messagerie Interne</h3>
     <h5 class="text-center mb-4">Connexion</h5>
 
-    <form action="LoginServlet" method="post">
+    <form action="login" method="post">
         <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" name="email" class="form-control" required>
