@@ -44,23 +44,5 @@ public class UserServlet extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-
-        if ("register".equals(action)) {
-            // Inscription d'un nouvel utilisateur
-            String firstName = request.getParameter("firstName");
-            String lastName = request.getParameter("lastName");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            String phone = request.getParameter("phone");
-
-            boolean success = userService.register(firstName, lastName, email, password, phone);
-
-            if (success) {
-                response.sendRedirect(request.getContextPath() + "/login?registered=true");
-            } else {
-                request.setAttribute("error", "Email déjà utilisé");
-                request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
-            }
-        }
     }
 }
